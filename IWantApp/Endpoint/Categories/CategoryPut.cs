@@ -1,6 +1,7 @@
 ﻿using IWantApp.Domain.Products;
 using IWantApp.Infra.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace IWantApp.Endpoint.Categories
 {
@@ -12,14 +13,15 @@ namespace IWantApp.Endpoint.Categories
 
         public static Delegate Handle => Action;
 
-        public static IResult Action([FromRoute] Guid Id,EmplooyeRequest categoryRequest, ApplicationDbContext context)
+        public static IResult Action([FromRoute] Guid Id, HttpContext http, CategoryRequest categoryRequest, ApplicationDbContext context)
         {
+            var userId = http.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
             var category = context.Categories.Where(c => c.Id == Id).FirstOrDefault();
 
             if (category == null)
                 return Results.NotFound();
 
-            category.EditInfo(categoryRequest.Name, categoryRequest.Active);
+            category.EditInfo(categoryRequest.Name, categoryRequest.Active, userId);
 
             if (!category.IsValid)
                 return Results.ValidationProblem(category.Notifications.ConvertToProblemsDetails());

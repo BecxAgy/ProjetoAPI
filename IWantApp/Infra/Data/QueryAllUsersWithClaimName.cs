@@ -16,7 +16,7 @@ namespace IWantApp.Infra.Data
 
         public IEnumerable SelectQuery(int page, int rows) 
         {
-            var db = new SqlConnection(configuration["ConnnectionString:iWantDb"]);
+            var db = new SqlConnection(configuration["ConnectionStrings:iWantDb"]);
             var querySelect = @"select Email, ClaimValue as Name 
             from AspNetUsers u inner join AspNetUserClaims
             c on u.Id = c.UserId and ClaimType = 'Name'

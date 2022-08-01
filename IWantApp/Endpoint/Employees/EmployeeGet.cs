@@ -2,6 +2,7 @@
 using IWantApp.Domain.Products;
 using IWantApp.Endpoint.Categories;
 using IWantApp.Infra.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using System.Security.Claims;
@@ -15,6 +16,8 @@ public static class EmployeeGet
     public static string[] Method => new string[] { HttpMethod.Get.ToString() };
 
     public static Delegate Handle => Action;
+
+    [Authorize(Policy = "EmployeePolicy")]
 
     public static IResult Action(int? page, int? rows, QueryAllUsersWithClaimName query) 
     {
@@ -34,7 +37,7 @@ public static class EmployeeGet
         catch (Exception)
         {
 
-            return Results.BadRequest("Erro: Insira valores válidos diferentes de zero ou nulo...");
+            return Results.BadRequest("Erro: Insira valores válidos diferentes de zero...");
         }
         
 
