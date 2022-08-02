@@ -19,7 +19,7 @@ public static class EmployeeGet
 
     [Authorize(Policy = "EmployeePolicy")]
 
-    public static IResult Action(int? page, int? rows, QueryAllUsersWithClaimName query) 
+    public static async Task <IResult> Action(int? page, int? rows, QueryAllUsersWithClaimName query) 
     {
         if(!page.HasValue)
         {
@@ -32,7 +32,8 @@ public static class EmployeeGet
 
         try
         {
-            return Results.Ok(query.SelectQuery(page.Value, rows.Value));
+            var result = await query.SelectQuery(page.Value, rows.Value);
+            return Results.Ok(result);  
         }
         catch (Exception)
         {

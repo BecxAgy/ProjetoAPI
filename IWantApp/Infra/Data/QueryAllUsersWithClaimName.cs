@@ -14,7 +14,7 @@ namespace IWantApp.Infra.Data
             this.configuration = configuration;
         }
 
-        public IEnumerable SelectQuery(int page, int rows) 
+        public async Task<IEnumerable<EmployeeResponse>> SelectQuery(int page, int rows) 
         {
             var db = new SqlConnection(configuration["ConnectionStrings:iWantDb"]);
             var querySelect = @"select Email, ClaimValue as Name 
@@ -23,7 +23,7 @@ namespace IWantApp.Infra.Data
             order by name
             OFFSET(@page - 1) * @rows ROWS FETCH NEXT @rows ROWS ONLY";
 
-            var employee = db.Query<EmployeeResponse>(
+            var employee = await db.QueryAsync<EmployeeResponse>(
             querySelect,
             new { page, rows }
             );
