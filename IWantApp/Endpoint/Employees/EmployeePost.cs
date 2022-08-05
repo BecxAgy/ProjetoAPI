@@ -1,4 +1,5 @@
 ﻿using IWantApp.Domain.Products;
+using IWantApp.Domain.Users;
 using IWantApp.Endpoint.Categories;
 using IWantApp.Infra.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -17,19 +18,9 @@ public static class EmployeePost
 
     [Authorize(Policy = "EmployeePolicy")]
 
-    public static async Task<IResult> Action(EmployeeRequest emplooyeRequest,HttpContext http, UserManager<IdentityUser> userManager)
+    public static async Task<IResult> Action(EmployeeRequest emplooyeRequest,HttpContext http,UserCreate userCreate)
     {
         var userId = http.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-        //always will be used IdentityUser class to represent the users
-        //Is not allowed pass the password in IdentityUser, it is pass in userMenager
-        var newUser = new IdentityUser {UserName = emplooyeRequest.Email, Email = emplooyeRequest.Email};
-        //CreateAsync returns a result
-        var result = await userManager.CreateAsync(newUser, emplooyeRequest.Password);
-
-        if (!result.Succeeded)
-            return Results.ValidationProblem(result.Errors.ConvertToProblemsDetails());
-
-        //Claim´s List that help to refactor the code
         var userClaims = new List<Claim>()
         {
             new Claim("EmployeeCode", emplooyeRequest.employeeCode),
@@ -37,15 +28,15 @@ public static class EmployeePost
             new Claim("CreatedBy", userId)
 
         };
+      
+       (IdentityResult identity, string user) result = await userCreate.Create(emplooyeRequest.Email, emplooyeRequest.Name, userClaims);
 
-        var resultClaim = await userManager.AddClaimsAsync(newUser, userClaims);
+        if (!result.identity.Succeeded)
+            return Results.ValidationProblem(result.identity.Errors.ConvertToProblemsDetails());
 
-        if (!resultClaim.Succeeded)
-            return Results.BadRequest(resultClaim.Errors.First());
+        
 
-
-
-        return Results.Created($"/employees/{newUser.Id}", newUser.Id);
+        return Results.Created($"/employees/{result.user}", result.user);
     }
 
 
