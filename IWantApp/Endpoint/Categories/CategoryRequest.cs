@@ -1,4 +1,4 @@
 ﻿namespace IWantApp.Endpoint.Categories
 {
-    public record CategoryRequest(string Name, bool Active);
+    public record ProductRequest(string Name, bool Active);
 }

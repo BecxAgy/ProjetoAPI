@@ -1,10 +1,12 @@
 using IWantApp.Endpoint.Categories;
 using IWantApp.Endpoint.Employees;
+using IWantApp.Endpoint.Products;
 using IWantApp.Endpoint.Security;
 using IWantApp.Infra.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -76,9 +78,29 @@ app.MapMethods(CategoryPost.Template, CategoryPost.Method, CategoryPost.Handle);
 app.MapMethods(EmployeeGet.Template, EmployeeGet.Method, EmployeeGet.Handle);
 app.MapMethods(EmployeePost.Template, EmployeePost.Method, EmployeePost.Handle);
 app.MapMethods(TokenPost.Template, TokenPost.Method, TokenPost.Handle);
+app.MapMethods(ProductPost.Template, ProductPost.Method, ProductPost.Handle);
 
 
+app.UseExceptionHandler("/error");
+app.Map("/error", (HttpContext http) =>
+{
 
+    var error = http.Features?.Get<IExceptionHandlerFeature>()?.Error;
+
+    if (error != null)
+    {
+        if (error is SqlException)
+            return Results.Problem(title: "Database out", statusCode: 500);
+
+        else if (error is BadHttpRequestException)
+            return Results.Problem(title: "Error to convert data to other type. See all the information sent", statusCode: 500);
+
+    }
+
+    return Results.Problem(title: "An error ocourred", statusCode: 500);
+
+
+});
 
 
 app.Run();

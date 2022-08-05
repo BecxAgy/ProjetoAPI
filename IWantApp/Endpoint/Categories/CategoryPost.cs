@@ -1,4 +1,4 @@
-﻿using IWantApp.Domain.Products;
+﻿
 using IWantApp.Infra.Data;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
@@ -15,7 +15,7 @@ public static class CategoryPost
 
     [Authorize]
 
-    public static async Task<IResult> Action(CategoryRequest categoryRequest, HttpContext http, ApplicationDbContext context)
+    public static async Task<IResult> Action(ProductRequest categoryRequest, HttpContext http, ApplicationDbContext context)
     {
         var userId = http.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
         var category = new Category(categoryRequest.Name,userId,userId);
@@ -29,8 +29,8 @@ public static class CategoryPost
          }   
 
 
-        context.Categories.AddAsync(category);
-        context.SaveChangesAsync();
+        await context.Categories.AddAsync(category);
+        await context.SaveChangesAsync();
 
         return Results.Created($"/categories/{category.Id}", category.Id);
 

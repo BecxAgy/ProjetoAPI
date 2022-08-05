@@ -13,7 +13,7 @@ namespace IWantApp.Endpoint.Categories
 
         public static Delegate Handle => Action;
 
-        public static IResult Action([FromRoute] Guid Id, HttpContext http, CategoryRequest categoryRequest, ApplicationDbContext context)
+        public static IResult Action([FromRoute] Guid Id, HttpContext http, ProductRequest categoryRequest, ApplicationDbContext context)
         {
             var userId = http.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
             var category = context.Categories.Where(c => c.Id == Id).FirstOrDefault();

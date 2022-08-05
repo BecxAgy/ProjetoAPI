@@ -1,8 +1,5 @@
-﻿using IWantApp.Domain.Products;
-using IWantApp.Endpoint.Categories;
-using IWantApp.Infra.Data;
+﻿
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -22,6 +19,8 @@ public static class TokenPost
 
     public static IResult Action(LoginRequest loginRequest, IConfiguration configuration, UserManager<IdentityUser> userManager)
     {
+        
+
         var user = userManager.FindByEmailAsync(loginRequest.Email).Result;
 
         if (user == null)
