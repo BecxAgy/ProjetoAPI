@@ -17,7 +17,7 @@ public static class TokenPost
 
     [AllowAnonymous]
 
-    public static IResult Action(LoginRequest loginRequest, IConfiguration configuration, UserManager<IdentityUser> userManager)
+    public static IResult Action(LoginRequest loginRequest, IConfiguration configuration, UserManager<IdentityUser> userManager, IWebHostEnvironment environment)
     {
         
 
@@ -45,7 +45,8 @@ public static class TokenPost
             SigningCredentials =
             new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature), //passing signing credentials
             Audience = configuration["JwtBearerTokenSettings:Audience"], //who will use
-            Issuer = configuration["JwtBearerTokenSettings:Issuer"]
+            Issuer = configuration["JwtBearerTokenSettings:Issuer"],
+            Expires = environment.IsDevelopment() || environment.IsStaging() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(2)
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
