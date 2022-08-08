@@ -24,9 +24,7 @@ public static class EmployeePost
         var userClaims = new List<Claim>()
         {
             new Claim("EmployeeCode", emplooyeRequest.employeeCode),
-            new Claim("Name", emplooyeRequest.Name),
-            new Claim("CreatedBy", userId)
-
+            new Claim("Name", emplooyeRequest.Name)
         };
       
        (IdentityResult identity, string user) result = await userCreate.Create(emplooyeRequest.Email, emplooyeRequest.Name, userClaims);

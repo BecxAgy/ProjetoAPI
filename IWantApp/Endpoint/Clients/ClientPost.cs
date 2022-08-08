@@ -18,17 +18,17 @@ public static class ClientPost
     public static async Task<IResult> Action(ClientRequest clientRequest, UserCreate userCreate)
     {
      
-        var userClaims = new List<Claim>()
+        var userClaims = new List<Claim>
         {
-            new Claim("CPF", clientRequest.Cpf),
-            new Claim("Name",clientRequest.Name),
+            new Claim("Cpf", clientRequest.Cpf),
+            new Claim("Name",clientRequest.Name)
 
         };
 
         (IdentityResult identity, string userId) result = await userCreate.Create(clientRequest.Email, clientRequest.Password, userClaims);
 
        if(!result.identity.Succeeded)
-            return Results.ValidationProblem(result.identity.Errors.ConvertToProblemsDetails());
+            return Results.ValidationProblem(result.identity.Errors.ConvertToProblemsDetails()); 
 
 
         return Results.Created($"/clients/{result.userId}", result.userId);

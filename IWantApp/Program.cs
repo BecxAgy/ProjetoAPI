@@ -85,6 +85,7 @@ app.MapMethods(ProductPost.Template, ProductPost.Method, ProductPost.Handle);
 app.MapMethods(ProductGet.Template, ProductGet.Methods, ProductGet.Handle); 
 app.MapMethods(ProductGetShowCase.Template, ProductGetShowCase.Methods, ProductGetShowCase.Handle);
 app.MapMethods(ClientPost.Template, ClientPost.Method, ClientPost.Handle);
+app.MapMethods(ClientGet.Template, ClientGet.Method, ClientGet.Handle); 
 
 
 
